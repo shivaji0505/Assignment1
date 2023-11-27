@@ -2,6 +2,8 @@ package com.bnt.assignment.arithmatic.operation.service;
 
 import java.util.Map;
 
+import com.bnt.assignment.arithmatic.operation.entity.RequestResponseEntity;
+
 public interface ArithmaticOpertionService {
 
 	Integer getAddNumbers(Integer number1, Integer number2);
@@ -12,4 +14,5 @@ public interface ArithmaticOpertionService {
 	Integer getSquareRootOfNumber(Integer number);
 	Integer getFactorialOfNumber(Integer number);
 	Map<String, Integer> getMinAndMaxNumber(Integer[] numArray);
+	RequestResponseEntity saveLog(String string, String string2);
 }

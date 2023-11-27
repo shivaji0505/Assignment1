@@ -2,6 +2,7 @@ package com.bnt.assignment.arithmatic.operation.controller;
 
 import java.util.Map;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bnt.assignment.arithmatic.operation.dto.RequestMinMax;
 import com.bnt.assignment.arithmatic.operation.dto.Response;
 import com.bnt.assignment.arithmatic.operation.dto.ResponseMinMax;
-import com.bnt.assignment.arithmatic.operation.dto.RequestMinMax;
 import com.bnt.assignment.arithmatic.operation.service.ArithmaticOpertionService;
+
+import ch.qos.logback.classic.Logger;
 
 @RestController
 @RequestMapping("/calculatorapi/v1")
@@ -25,6 +28,9 @@ public class AssignmentController {
 	
 	@Autowired
     private ArithmaticOpertionService arithmaticOpertionService;
+	
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(AssignmentController.class);
+
 	
 	@GetMapping("/addition")
     public @ResponseBody ResponseEntity<Response> getAddition(@RequestParam(value = "number1") Integer number1,@RequestParam(value = "number2") Integer number2) {
@@ -34,6 +40,8 @@ public class AssignmentController {
             String detail = number1 + " +  " + number2 + " = " + sum;
             Response response = new Response(sum, detail);
 			responseEntity =  new ResponseEntity<Response>(response, HttpStatus.OK);
+			logger.info("Request: Addition, Num1: {}, Num2: {}. Response: {}", number1, number2, response);
+			arithmaticOpertionService.saveLog(number1 + ", " + number2, response.toString());
 		}
 		catch(Exception ex) {
 			responseEntity =  new ResponseEntity<Response>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -49,6 +57,8 @@ public class AssignmentController {
             String detail = number1 + " - " + number2 + " = " + answer;
             Response response = new Response(answer, detail);
 			responseEntity =  new ResponseEntity<Response>(response, HttpStatus.OK);
+			logger.info("Request: Subtraction, Num1: {}, Num2: {}. Response: {}", number1, number2, response);
+			arithmaticOpertionService.saveLog(number1 + ", " + number2, response.toString());
 		}
 		catch(Exception ex) {
 			responseEntity =  new ResponseEntity<Response>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -64,6 +74,8 @@ public class AssignmentController {
 			String detail = number1 + " * " + number2 + " = " + answer;
             Response response = new Response(answer, detail);
 			responseEntity =  new ResponseEntity<Response>(response, HttpStatus.OK);
+			logger.info("Request: Multiplication, Num1: {}, Num2: {}. Response: {}", number1, number2, response);
+			arithmaticOpertionService.saveLog(number1 + ", " + number2, response.toString());
 		}
 		catch(Exception ex) {
 			responseEntity =  new ResponseEntity<Response>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -79,6 +91,8 @@ public class AssignmentController {
 			String detail = number1 + " / " + number2 + " = " + answer;
 			Response response = new Response(answer, detail);
 			responseEntity =  new ResponseEntity<Response>(response, HttpStatus.OK);
+			logger.info("Request: Division, Num1: {}, Num2: {}. Response: {}", number1, number2, response);
+			arithmaticOpertionService.saveLog(number1 + ", " + number2, response.toString());
 		}
 		catch(Exception ex) {
 			responseEntity =  new ResponseEntity<Response>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -94,7 +108,9 @@ public class AssignmentController {
 			String detail = "square of "+number+" = " +square;
 			Response response = new Response(square, detail);
 			responseEntity =  new ResponseEntity<Response>(response, HttpStatus.OK);
-		}
+		    logger.info("Request: square, num: {}. Response: {}", number, response);	
+		    arithmaticOpertionService.saveLog("num", detail);
+}
 		catch(Exception ex) {
 			responseEntity =  new ResponseEntity<Response>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -109,6 +125,8 @@ public class AssignmentController {
 			String detail = "squareroot of "+number+" = " +squareRoot;
 			Response response = new Response(squareRoot, detail);
 			responseEntity =  new ResponseEntity<Response>(response, HttpStatus.OK);
+			logger.info("Request: squareRoot, num: {}. Response: {}", number, response);
+		    arithmaticOpertionService.saveLog("num", detail);
 		}
 		catch(Exception ex) {
 			responseEntity =  new ResponseEntity<Response>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -124,6 +142,8 @@ public class AssignmentController {
 			String detail = +number+" ! = " +factorial;
 			Response response = new Response(factorial, detail);
 			responseEntity =  new ResponseEntity<Response>(response, HttpStatus.OK);
+			logger.info("Request: factorial, num: {}. Response: {}", number, response);
+		    arithmaticOpertionService.saveLog("num", detail);
 		}
 		catch(Exception ex) {
 			responseEntity =  new ResponseEntity<Response>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -139,6 +159,8 @@ public class AssignmentController {
 			Map<String, Integer> minMaxMap=arithmaticOpertionService.getMinAndMaxNumber(numbers.getNumArray());
 			ResponseMinMax responseMinMax=new ResponseMinMax(minMaxMap.get("min"),minMaxMap.get("max"));
 			responseEntity =  new ResponseEntity<ResponseMinMax>(responseMinMax, HttpStatus.OK);
+			logger.info("Request: MinMax, Numbers: {}. Response:{}", minMaxMap.get("min"),minMaxMap.get("max"), responseMinMax);
+		    arithmaticOpertionService.saveLog(minMaxMap.get("min")+", "+minMaxMap.get("max"), responseMinMax.toString());
 		}
 		catch(Exception ex) {
 			responseEntity =  new ResponseEntity<ResponseMinMax>(HttpStatus.INTERNAL_SERVER_ERROR);
